@@ -46,14 +46,36 @@ class TestCreateBankAccount(unittest.TestCase):
         self.assertEqual(konto.saldo, 0, "Saldo nie jest zerowe!")
 
     def test_promo_correct(self):
-        konto = Konto(self.imie, self.nazwisko, self.pesel, "PROM_123")
-        self.assertEqual(konto.saldo, 50, "Saldo nie jest zerowe!")
+        konto = Konto(self.imie, self.nazwisko, "65010112345", "PROM_123")
+        self.assertEqual(
+            konto.saldo, 50, "Osoba urodzona po '60, kod poprawny")
 
     def test_promo_year_59(self):
-        konto = Konto(self.imie, self.nazwisko, self.pesel)
+        konto = Konto(self.imie, self.nazwisko, "59010101010", "PROM_123")
+        self.assertEqual(
+            konto.saldo, 0, "Osoba urodzona przed '60, kod poprawny")
 
     def test_promo_year_61(self):
+        konto = Konto(self.imie, self.nazwisko, "61010101010", "PROM_123")
+        self.assertEqual(
+            konto.saldo, 50, "Osoba urodzona po '60, kod poprawny")
+
     def test_promo_year_60(self):
+        konto = Konto(self.imie, self.nazwisko, "60010101010", "PROM_123")
+        self.assertEqual(konto.saldo, 0, "Osoba urodzona w '60, kod poprawny")
+
     def test_promo_year_2001(self):
+        konto = Konto(self.imie, self.nazwisko, "01010101010", "PROM_123")
+        self.assertEqual(konto.saldo, 50, "Osoba urodzona w '01, kod poprawny")
+
     def test_promo_year_2001_wrong_promo_code(self):
+        konto = Konto(self.imie, self.nazwisko, "01010101010", "PROM_1234")
+        self.assertEqual(
+            konto.saldo, 0, "Osoba urodzona w '01, kod niepoprawny")
+
     def test_promo_year_correct_promo_code_wrong_pesel(self):
+        konto = Konto(self.imie, self.nazwisko, "010101010100", "PROM_123")
+        self.assertEqual(
+            konto.pesel, "Niepoprawny pesel!", "Pesel niepoprawny")
+        self.assertEqual(
+            konto.saldo, 0, "Osoba urodzona w '01, pesel niepoprawny")
