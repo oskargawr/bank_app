@@ -37,3 +37,29 @@ class TestCreateBankAccount(unittest.TestCase):
         first_account.przelew_wychodzacy(200)
         self.assertEqual(first_account.saldo, 120,
                          "Saldo nie jest poprawne!")
+
+    def test_incoming_transfer_with_incorrrect_ammount(self):
+        first_account = KontoFirmowe(self.name, self.nip)
+        first_account.saldo = 120
+        first_account.przelew_przychodzacy(-20)
+        self.assertEqual(first_account.saldo, 120, "Saldo nie jest poprawne!")
+
+    def test_outgoing_express_transfer(self):
+        first_account = KontoFirmowe(self.name, self.nip)
+        first_account.saldo = 120
+        first_account.przelew_ekspresowy(100)
+        self.assertEqual(first_account.saldo, 20 - 5,
+                         "Saldo nie jest poprawne!")
+
+    def test_outgoing_express_transfer_with_negative_result(self):
+        first_account = KontoFirmowe(self.name, self.nip)
+        first_account.saldo = 20
+        first_account.przelew_ekspresowy(20)
+        self.assertEqual(first_account.saldo, -5, "Saldo nie jest poprawne!")
+
+    def test_outgoing_express_transfer_with_insufficient_funds(self):
+        first_account = KontoFirmowe(self.name, self.nip)
+        first_account.saldo = 20
+        first_account.przelew_ekspresowy(100)
+        self.assertEqual(first_account.saldo, 20,
+                         "Saldo nie jest poprawne!")
