@@ -1,6 +1,7 @@
 import unittest
 
 from ..KontoOsobiste import KontoOsobiste
+from ..Konto import Konto
 
 
 class TestCreateBankAccount(unittest.TestCase):
@@ -87,3 +88,13 @@ class TestCreateBankAccount(unittest.TestCase):
         Konto = KontoOsobiste(self.imie, self.nazwisko, "010101010100", "PROM_123")
         self.assertEqual(Konto.pesel, "Niepoprawny pesel!", "Pesel niepoprawny")
         self.assertEqual(Konto.saldo, 0, "Osoba urodzona w '01, pesel niepoprawny")
+
+    def test_outgoing_express_transfer(self):
+        Konto = KontoOsobiste(self.imie, self.nazwisko, self.pesel)
+        Konto.saldo = 120
+        Konto.przelew_ekspresowy(100)
+        self.assertEqual(Konto.saldo, 20 - 1, "Saldo nie jest poprawne!")
+
+    def test_creating_Konto_self_saldo(self):
+        test_konto = Konto()
+        self.assertEqual(test_konto.saldo, 0, "Saldo nie jest zerowe!")

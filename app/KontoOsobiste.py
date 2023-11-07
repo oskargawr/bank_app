@@ -6,6 +6,7 @@ class KontoOsobiste(Konto):
         self.imie = imie
         self.nazwisko = nazwisko
         self.saldo = 0
+        self.oplata_za_przelew_ekspresowy = 1
 
         if len(pesel) != 11:
             self.pesel = "Niepoprawny pesel!"
@@ -31,8 +32,6 @@ class KontoOsobiste(Konto):
                 return 2000 + int(self.pesel[0:2])
             else:
                 return 1900 + int(self.pesel[0:2])
-        else:
-            return "Niepoprawny pesel!"
 
     def is_born_after_year_1960(self):
         if self.pesel == "Niepoprawny pesel!":

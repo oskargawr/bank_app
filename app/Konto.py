@@ -11,11 +11,5 @@ class Konto:
             self.saldo -= kwota
 
     def przelew_ekspresowy(self, kwota):
-        if self.nip is None:
-            if (self.saldo - kwota) >= 0 and kwota > 0:
-                self.saldo -= kwota
-                self.saldo -= 1
-        else:
-            if (self.saldo - kwota) >= 0 and kwota > 0:
-                self.saldo -= kwota
-                self.saldo -= 5
+        if (self.saldo - kwota) >= 0 and kwota > 0:
+            self.saldo -= kwota + self.oplata_za_przelew_ekspresowy

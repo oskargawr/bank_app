@@ -11,3 +11,4 @@ class KontoFirmowe(Konto):
             self.nip = "Niepoprawny nip!"
         else:
             self.nip = nip
+            self.oplata_za_przelew_ekspresowy = 5
