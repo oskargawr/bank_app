@@ -7,6 +7,7 @@ class KontoOsobiste(Konto):
         self.nazwisko = nazwisko
         self.saldo = 0
         self.oplata_za_przelew_ekspresowy = 1
+        self.history = []
 
         if len(pesel) != 11:
             self.pesel = "Niepoprawny pesel!"

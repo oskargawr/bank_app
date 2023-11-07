@@ -69,3 +69,27 @@ class TestTransfer(unittest.TestCase):
         first_account.przelew_przychodzacy(120)
         first_account.przelew_wychodzacy(50)
         self.assertEqual(first_account.saldo, 170, "Saldo nie jest poprawne!")
+        self.assertEqual(
+            first_account.history, [100, 120, -50], "Historia nie jest poprawna!"
+        )
+
+    def test_history_insufficient_funds(self):
+        first_account = KontoOsobiste(
+            self.personal_data["name"],
+            self.personal_data["surname"],
+            self.personal_data["pesel"],
+        )
+        first_account.przelew_wychodzacy(100)
+        self.assertEqual(first_account.history, [], "Historia nie jest poprawna!")
+
+    def test_history_express_transfer_payment(self):
+        first_account = KontoOsobiste(
+            self.personal_data["name"],
+            self.personal_data["surname"],
+            self.personal_data["pesel"],
+        )
+        first_account.saldo = 120
+        first_account.przelew_ekspresowy(100)
+        self.assertEqual(
+            first_account.history, [-100, -1], "Historia nie jest poprawna!"
+        )
