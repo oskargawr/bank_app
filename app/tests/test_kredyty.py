@@ -1,6 +1,7 @@
 import unittest
 
 from ..KontoOsobiste import KontoOsobiste
+from parameterized import parameterized
 
 
 class TestTransfer(unittest.TestCase):
@@ -10,52 +11,32 @@ class TestTransfer(unittest.TestCase):
         "pesel": "96001010101",
     }
 
-    def test_kredyt_warunek_a(self):
+    @parameterized.expand(
+        [  # [[history], kwota, oczekiwany_udzielony_kredyt, oczekiwane saldo]
+            [[100, 100, 100], 100, True, 100],
+            [[100, -50, 300, -100, 100], 100, True, 100],
+            [[200, 200], 100, False, 0],
+            [[200, -100, -5, 10, 200], 1000, False, 0],
+            [[200, -100, -5, 10, 200], -1000, False, 0],
+        ]
+    )
+    def test_kredyt(
+        self, history, kwota, oczekiwany_udzielony_kredyt, oczekiwane_saldo
+    ):
         konto = KontoOsobiste(
             self.personal_data["name"],
             self.personal_data["surname"],
             self.personal_data["pesel"],
         )
-        konto.history = [100, 100, 100]
-        konto.zaciagnij_kredyt(100)
-        self.assertEqual(konto.udzielony_kredyt, True, "Kredyt nie został udzielony!")
-
-    def test_kredyt_warunek_b(self):
-        konto = KontoOsobiste(
-            self.personal_data["name"],
-            self.personal_data["surname"],
-            self.personal_data["pesel"],
+        konto.history = history
+        konto.zaciagnij_kredyt(kwota)
+        self.assertEqual(
+            konto.udzielony_kredyt,
+            oczekiwany_udzielony_kredyt,
+            "Kredyt nie został udzielony!",
         )
-        konto.history = [100, -50, 300, -100, 100]
-        konto.zaciagnij_kredyt(100)
-        self.assertEqual(konto.udzielony_kredyt, True, "Kredyt nie został udzielony!")
-
-    def test_kredyt_warunek_a_nieudzielono(self):
-        konto = KontoOsobiste(
-            self.personal_data["name"],
-            self.personal_data["surname"],
-            self.personal_data["pesel"],
+        self.assertEqual(
+            konto.saldo,
+            oczekiwane_saldo,
+            "Saldo nie zgadza się z oczekiwanym!",
         )
-        konto.history = [200, 200]
-        konto.zaciagnij_kredyt(100)
-        self.assertEqual(konto.udzielony_kredyt, False, "Kredyt został udzielony!")
-
-    def test_kredyt_warunek_b_2(self):
-        konto = KontoOsobiste(
-            self.personal_data["name"],
-            self.personal_data["surname"],
-            self.personal_data["pesel"],
-        )
-        konto.history = [200, -100, -5, 10, 200]
-        konto.zaciagnij_kredyt(1000)
-        self.assertEqual(konto.udzielony_kredyt, False, "Kredyt nie został udzielony!")
-
-    def test_ujemny_kredyt(self):
-        konto = KontoOsobiste(
-            self.personal_data["name"],
-            self.personal_data["surname"],
-            self.personal_data["pesel"],
-        )
-        konto.history = [200, -100, -5, 10, 200]
-        konto.zaciagnij_kredyt(-1000)
-        self.assertEqual(konto.udzielony_kredyt, False, "Kredyt został udzielony!")
