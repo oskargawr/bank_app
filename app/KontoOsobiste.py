@@ -8,6 +8,7 @@ class KontoOsobiste(Konto):
         self.saldo = 0
         self.oplata_za_przelew_ekspresowy = 1
         self.history = []
+        self.udzielony_kredyt = False
 
         if len(pesel) != 11:
             self.pesel = "Niepoprawny pesel!"
@@ -38,3 +39,28 @@ class KontoOsobiste(Konto):
         if self.pesel == "Niepoprawny pesel!":
             return False
         return self.get_year_from_pesel() > 1960
+
+    def czy_trzy_ostatnie_to_wplaty(self):
+        last_three_elements = self.history[-3:]
+        if len(self.history) < 3:
+            return False
+        elif all(element > 0 for element in last_three_elements):
+            return True
+        else:
+            return False
+
+    def czy_suma_ostatnich_5_jest_wieksza_niz_kredyt(self):
+        last_five_elements = self.history[-5:]
+        return sum(last_five_elements)
+
+    def zaciagnij_kredyt(self, kwota):
+        if kwota < 0:
+            return False
+        elif self.czy_trzy_ostatnie_to_wplaty() or (
+            self.czy_suma_ostatnich_5_jest_wieksza_niz_kredyt() > kwota
+            and (len(self.history) >= 5)
+        ):
+            self.saldo += kwota
+            self.udzielony_kredyt = True
+            return True
+        return False
