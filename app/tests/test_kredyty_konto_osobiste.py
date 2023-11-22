@@ -4,7 +4,7 @@ from ..KontoOsobiste import KontoOsobiste
 from parameterized import parameterized
 
 
-class TestTransfer(unittest.TestCase):
+class TestKredytOsobiste(unittest.TestCase):
     personal_data = {
         "name": "Dariusz",
         "surname": "Januszewski",
@@ -20,7 +20,7 @@ class TestTransfer(unittest.TestCase):
             [[200, -100, -5, 10, 200], -1000, False, 0],
         ]
     )
-    def test_kredyt(
+    def test_kredyt_konto_osobiste(
         self, history, kwota, oczekiwany_udzielony_kredyt, oczekiwane_saldo
     ):
         konto = KontoOsobiste(
