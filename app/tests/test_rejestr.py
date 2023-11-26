@@ -29,6 +29,12 @@ class TestRejestr(unittest.TestCase):
         konto = RejestrKont.znajdz_konto("12345678900")
         self.assertEqual(konto, None, "Znaleziono nieistniejace konto!")
 
+    def test_usun_konto(self):
+        konto = KontoOsobiste(self.imie, self.nazwisko, "10101010101")
+        RejestrKont.dodaj_konto(konto)
+        RejestrKont.usun_konto(konto.pesel)
+        self.assertEqual(RejestrKont.ile_kont(), 3, "Nie usunieto konta!")
+
     @classmethod
     def tearDownClass(cls):
         RejestrKont.lista = []
