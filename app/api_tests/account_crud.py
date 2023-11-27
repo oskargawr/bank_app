@@ -47,7 +47,7 @@ class TestAccountCrud(unittest.TestCase):
         response = requests.delete(self.url + "/api/accounts/delete/12345678901")
         self.assertEqual(response.status_code, 200)
 
-    def test_7_delete_account(self):
+    def test_7_delete_non_existing_account(self):
         response = requests.delete(self.url + "/api/accounts/delete/12345678902")
         self.assertEqual(response.status_code, 404)
 
