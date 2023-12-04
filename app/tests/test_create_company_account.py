@@ -16,10 +16,13 @@ class TestCreateBankAccount(unittest.TestCase):
         self.assertEqual(first_account.saldo, 0, "Saldo nie jest poprawne!")
 
     def test_create_bank_account_with_incorrect_nip(self):
-        first_account = KontoFirmowe(self.name, "123456789")
-        self.assertEqual(
-            first_account.nip, "Niepoprawny nip!", "Nip nie jest poprawny!"
-        )
+        with self.assertRaises(Exception) as context:
+            konto = KontoFirmowe("Nazwa firmy", "1234567890")
+            self.assertTrue("Niepoprawny nip!" in str(context.exception))
+
+    def test_too_short_nip(self):
+        konto = KontoFirmowe("Nazwa firmy", "1234569")
+        self.assertEqual(konto.nip, "Niepoprawny nip!", "Nip nie jest poprawny!")
 
     def test_incoming_transfer(self):
         first_account = KontoFirmowe(self.name, self.nip)

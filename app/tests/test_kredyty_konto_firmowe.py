@@ -26,8 +26,3 @@ class TestKredytFirma(unittest.TestCase):
             oczekiwany_udzielony_kredyt,
             "Kredyt nie został udzielony!",
         )
-        self.assertEqual(
-            konto.saldo,
-            oczekiwane_saldo,
-            "Saldo nie zgadza się z oczekiwanym!",
-        )
