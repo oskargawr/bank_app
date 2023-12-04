@@ -8,6 +8,8 @@ app = Flask(__name__)
 @app.route("/api/accounts", methods=["POST"])
 def stworz_konto():
     dane = request.get_json()
+    if RejestrKont.znajdz_konto(dane["pesel"]) is not None:
+        return jsonify({"message": "Konto o podanym peselu juz istnieje"}), 409
     print(f"Otrzymano dane: {dane}")
     konto = KontoOsobiste(dane["imie"], dane["nazwisko"], dane["pesel"])
     RejestrKont.dodaj_konto(konto)
@@ -52,3 +54,21 @@ def usun_konto(pesel):
     else:
         RejestrKont.usun_konto(pesel)
         return jsonify({"message": "Usunieto konto"}), 200
+
+
+@app.route("/api/accounts/<pesel>/transfer", methods=["POST"])
+def transfer(pesel):
+    konto = RejestrKont.znajdz_konto(pesel)
+    if konto is None:
+        return jsonify({"message": "Nie znaleziono konta o podanym peselu"}), 404
+    else:
+        dane = request.get_json()
+        if ("amount" and "type") in dane:
+            if dane["type"] == "incoming":
+                konto.przelew_przychodzacy(int(dane["amount"]))
+                return jsonify({"message": "Przelew zostal wykonany"}), 200
+            if dane["type"] == "outgoing":
+                konto.przelew_wychodzacy(int(dane["amount"]))
+                return jsonify({"message": "Przelew zostal wykonany"}), 200
+
+        return jsonify({"message": "Zlecenie przyjeto do realizacji"}), 200
