@@ -2,9 +2,18 @@ import unittest
 
 from ..KontoFirmowe import KontoFirmowe
 from parameterized import parameterized
+from unittest.mock import patch
 
 
 class TestKredytFirma(unittest.TestCase):
+    name = "JDG"
+    nip = "1234567890"
+
+    @patch("app.KontoFirmowe.KontoFirmowe.check_nip")
+    def setUp(self, mock_check_nip):
+        mock_check_nip.return_value = True
+        self.konto = KontoFirmowe(self.name, self.nip)
+
     @parameterized.expand(
         [  # [[history], kwota, saldo, oczekiwany_udzielony_kredyt, oczekiwane saldo]
             [[-1775, 100, 100], 100, 200, True, 300],
@@ -17,17 +26,16 @@ class TestKredytFirma(unittest.TestCase):
     def test_kredyt_konto_firmowe(
         self, history, kwota, saldo, oczekiwany_udzielony_kredyt, oczekiwane_saldo
     ):
-        konto = KontoFirmowe("Nazwa firmy", "1234567890")
-        konto.history = history
-        konto.saldo = saldo
-        konto.zaciagnij_kredyt(kwota)
+        self.konto.history = history
+        self.konto.saldo = saldo
+        self.konto.zaciagnij_kredyt(kwota)
         self.assertEqual(
-            konto.udzielony_kredyt,
+            self.konto.udzielony_kredyt,
             oczekiwany_udzielony_kredyt,
             "Kredyt nie został udzielony!",
         )
         self.assertEqual(
-            konto.saldo,
+            self.konto.saldo,
             oczekiwane_saldo,
-            "Saldo nie zgadza się z oczekiwanym!",
+            "Saldo nie jest równe oczekiwanemu!",
         )
