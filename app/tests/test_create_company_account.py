@@ -1,13 +1,17 @@
 import unittest
 
 from ..KontoFirmowe import KontoFirmowe
+from unittest.mock import patch
+from unittest.mock import patch
 
 
 class TestCreateBankAccount(unittest.TestCase):
     name = "JDG"
     nip = "1234567890"
 
-    def test_create_bank_account(self):
+    @patch("requests.get")
+    def test_create_bank_account(self, mock_requests_get):
+        mock_requests_get.return_value.status_code = 200
         first_account = KontoFirmowe(self.name, self.nip)
         self.assertEqual(
             first_account.nazwa_firmy, self.name, "Nazwa firmy nie jest poprawna!"
@@ -15,10 +19,12 @@ class TestCreateBankAccount(unittest.TestCase):
         self.assertEqual(first_account.nip, self.nip, "Nip nie jest poprawny!")
         self.assertEqual(first_account.saldo, 0, "Saldo nie jest poprawne!")
 
-    def test_create_bank_account_with_incorrect_nip(self):
+    @patch("requests.get")
+    def test_check_nip_false(self, mock_requests_get):
+        mock_requests_get.return_value.status_code = 404
         with self.assertRaises(Exception) as context:
-            konto = KontoFirmowe("Nazwa firmy", "1234567890")
-            self.assertTrue("Niepoprawny nip!" in str(context.exception))
+            KontoFirmowe("Nazwa firmy", "1234567890")
+        self.assertTrue("Niepoprawny nip!" in str(context.exception))
 
     def test_too_short_nip(self):
         konto = KontoFirmowe("Nazwa firmy", "1234569")
