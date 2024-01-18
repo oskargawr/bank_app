@@ -72,3 +72,17 @@ def transfer(pesel):
                 return jsonify({"message": "Przelew zostal wykonany"}), 200
 
         return jsonify({"message": "Zlecenie przyjeto do realizacji"}), 200
+
+
+@app.route("/api/accounts/save", methods=["PATCH"])
+def save():
+    RejestrKont.save()
+    ilosc_kont = RejestrKont.ile_kont()
+    return jsonify({"message": "Zapisano konta", "ilosc_kont": ilosc_kont}), 200
+
+
+@app.route("/api/accounts/load", methods=["PATCH"])
+def load():
+    RejestrKont.load()
+    ilosc_kont = RejestrKont.ile_kont()
+    return jsonify({"message": "Zaladowano konta", "ilosc_kont": ilosc_kont}), 200
