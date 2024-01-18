@@ -4,3 +4,4 @@ python3 -m coverage html
 
 flask --app app/api.py --debug run
 python3 -m unittest app/api_tests/account_crud.py
+docker compose -f mongo.yml up  
