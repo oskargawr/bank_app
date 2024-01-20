@@ -36,5 +36,5 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test api with unittest
       run: |
-        python3 -m unittest app/api_tests/account_crud.py
+        python3 -m unittest discover -s app/api_tests -p '*.py'
 
