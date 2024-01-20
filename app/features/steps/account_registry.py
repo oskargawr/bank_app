@@ -66,3 +66,33 @@ def check_surname(context, pesel, name):
     print("konto: ", account.json())
     assert_equal(account.status_code, 200)
     assert_equal(account.json()["konto"]["imie"], name)
+
+
+@step('Account with pesel "{pesel}" has saldo: "{saldo}"')
+def check_if_account_with_pesel_exists(context, pesel, saldo):
+    account = requests.get(URL + f"/api/accounts/{pesel}")
+    assert_equal(account.json()["konto"]["saldo"], int(saldo))
+
+
+@step('Account with pesel "{pesel}" has history of transfers: "{history}"')
+def check_if_account_with_pesel_exists(context, pesel, history):
+    historia = [int(x) for x in history.split(",")]
+    print("--------------------historia: ", historia)
+    account = requests.get(URL + f"/api/accounts/{pesel}")
+    assert_equal(account.json()["konto"]["history"], historia)
+
+
+@step('I make outgoing transfer with pesel: "{pesel}", ammount: "{ammount}"')
+def make_outgoing_transfer(context, pesel, ammount):
+    json_body = {"type": "outgoing", "amount": f"{ammount}"}
+    resp = requests.post(URL + f"/api/accounts/{pesel}/transfer", json=json_body)
+    assert_equal(resp.status_code, 200)
+    assert_equal(resp.json()["message"], "Przelew zostal wykonany")
+
+
+@when('I make incoming transfer with pesel: "{pesel}", ammount: "{ammount}"')
+def make_incoming_transfer(context, pesel, ammount):
+    json_body = {"type": "incoming", "amount": f"{ammount}"}
+    resp = requests.post(URL + f"/api/accounts/{pesel}/transfer", json=json_body)
+    assert_equal(resp.status_code, 200)
+    assert_equal(resp.json()["message"], "Przelew zostal wykonany")

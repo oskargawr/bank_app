@@ -51,3 +51,4 @@ Feature: Account registry
     Given Number of accounts in registry equals: "0"
     When I save the account registry
     Then Number of accounts in registry equals: "0"
+    
