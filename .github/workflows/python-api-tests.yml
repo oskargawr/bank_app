@@ -38,7 +38,7 @@ jobs:
     - name: Prepare Api and Docker
       run: |
         flask --app app/api.py --debug run &
-        docker compose -f app/mongo.yml up -d &
+        docker compose -f mongo.yml up -d &
     - name: Test api with unittest
       run: |
         python3 -m unittest discover -s app/api_tests -p '*.py'
